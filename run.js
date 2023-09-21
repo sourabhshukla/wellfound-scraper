@@ -6,6 +6,7 @@ const {
 } = require("./config");
 const axios = require("axios");
 const { Job } = require("./models/job.model");
+const expExtractor = require("./html");
 
 const startScraping = async () => {
   for (let track in keywords) {
@@ -43,6 +44,7 @@ const startScraping = async () => {
               let jobTitle = job.title;
               let jobSlug = job.slug;
               let jobUrl = `https://wellfound.com/jobs/${jobId}-${jobSlug}`;
+              let exp = await expExtractor(jobUrl);
               let jobCompensation = job.compensation;
               let equity = job.equity;
               let jobLocationNames = job.locationNames;
@@ -53,6 +55,7 @@ const startScraping = async () => {
                 track,
                 jobId,
                 jobType,
+                exp,
                 jobSlug,
                 jobTitle,
                 jobUrl,
@@ -87,6 +90,7 @@ const publishJob = async (
   track,
   jobId,
   jobType,
+  exp,
   jobSlug,
   jobTitle,
   jobUrl,
@@ -118,6 +122,7 @@ const publishJob = async (
         track: track,
         jobId: jobId,
         jobType: jobType,
+        exp: exp,
         jobSlug: jobSlug,
         jobTitle: jobTitle,
         jobUrl: jobUrl,

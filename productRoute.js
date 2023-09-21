@@ -18,6 +18,24 @@ router.route("/").get(async (req, res) => {
   }
 });
 
+router.route("/test").get(async (req, res, next) => {
+  // await Example.create({ test: "sdf" });
+  // res.status(201).json({
+  //   success: "true",
+  // });
+  const currTimeStamp = Math.floor(Date.now() / 1000);
+  const minTimeStamp = currTimeStamp - 24 * 60 * 60;
+  const data = await Job.find({
+    $expr: {
+      $gt: [{ $toLong: "$jobPostedAt" }, minTimeStamp],
+    },
+  });
+  res.status(200).json({
+    success: true,
+    data: data,
+  });
+});
+
 router.route("/").post(async (req, res, next) => {
   let isPresent = await Job.find({ jobId: req.body.jobId });
   console.log(isPresent);
